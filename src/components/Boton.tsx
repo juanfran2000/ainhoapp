@@ -1,19 +1,33 @@
-"use client";
-import { useState } from "react";
+"use clients";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 type Props = {
   img: string;
   alt: string;
   color: string;
-  audioSrc: string; // Nueva prop para el archivo de audio
+  audioSrc: string;
 };
 
 export default function Boton({ img, alt, color, audioSrc }: Props) {
-  const [audio] = useState(new Audio(audioSrc));
+  const [audio, setAudio] = useState<Audio | undefined>(undefined);
+
+  useEffect(() => {
+    if (process.browser) {
+      const audioElement = new Audio(audioSrc);
+      setAudio(audioElement);
+
+      return () => {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      };
+    }
+  }, [audioSrc]);
 
   const handleButtonClick = () => {
-    audio.play();
+    if (audio) {
+      audio.play();
+    }
   };
 
   return (
@@ -22,7 +36,6 @@ export default function Boton({ img, alt, color, audioSrc }: Props) {
       onClick={handleButtonClick}
     >
       <div className="w-[100px] h-[100px] bg-white rounded-xl flex justify-center items-center">
-        {/* Tu contenido del botón */}
         <Image src={img} alt={alt} width={80} height={80} />
       </div>
     </button>

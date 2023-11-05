@@ -1,12 +1,28 @@
 "use client";
+import { useState, useEffect } from "react";
 import Boton from "@/components/Boton";
-import { useState } from "react";
+
 export default function Home() {
-  const [audio] = useState(new Audio("/plim.mp3"));
+  const [audio, setAudio] = useState<Audio | undefined>(undefined);
+
+  useEffect(() => {
+    if (process.browser) {
+      const audioElement = new Audio("/plim.mp3");
+      setAudio(audioElement);
+
+      return () => {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      };
+    }
+  }, []);
 
   const sonidoPlim = () => {
-    audio.play();
+    if (audio) {
+      audio.play();
+    }
   };
+
   return (
     <div className=" flex items-center justify-center mb-10">
       <div className="flex flex-col items-center justify-center py-10 bg-zinc-200 w-11/12 rounded-xl">
