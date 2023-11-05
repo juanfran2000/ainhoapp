@@ -1,24 +1,27 @@
 "use client";
-import Boton from "@/components/Boton";
 import { useState, useEffect } from "react";
+import Boton from "@/components/Boton";
 
 export default function Home() {
-  const [audio] = useState(new Audio("/plim.mp3"));
-
-  const sonidoPlim = () => {
-    audio.play();
-  };
+  const [audio, setAudio] = useState<Audio | undefined>(undefined);
 
   useEffect(() => {
-    // Esta función se ejecuta después de que el componente se monta en el navegador
-    // Puedes inicializar y configurar el audio aquí
-    return () => {
-      // Esta función se ejecuta cuando el componente se desmonta
-      // Puedes realizar la limpieza necesaria, como pausar el audio, aquí
-      audio.pause();
-      audio.currentTime = 0;
-    };
-  }, [audio]);
+    if (process.browser) {
+      const audioElement = new Audio("/plim.mp3");
+      setAudio(audioElement);
+
+      return () => {
+        audioElement.pause();
+        audioElement.currentTime = 0;
+      };
+    }
+  }, []);
+
+  const sonidoPlim = () => {
+    if (audio) {
+      audio.play();
+    }
+  };
 
   return (
     <div className=" flex items-center justify-center mb-10">
