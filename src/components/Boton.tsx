@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 type Props = {
@@ -11,6 +11,17 @@ type Props = {
 
 export default function Boton({ img, alt, color, audioSrc }: Props) {
   const [audio] = useState(new Audio(audioSrc));
+
+  useEffect(() => {
+    // Esta función se ejecuta después de que el componente se monta en el navegador
+    // Puedes inicializar y configurar el audio aquí
+    return () => {
+      // Esta función se ejecuta cuando el componente se desmonta
+      // Puedes realizar la limpieza necesaria, como pausar el audio, aquí
+      audio.pause();
+      audio.currentTime = 0;
+    };
+  }, [audio]);
 
   const handleButtonClick = () => {
     audio.play();
